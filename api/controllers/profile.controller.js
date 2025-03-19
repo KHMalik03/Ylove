@@ -1,7 +1,7 @@
 const { pool } = require('../database');
 const Profile = require('../models/profile.model');
 
-// Create a new user
+// Create a new profile
 exports.CreateProfile = async (profileData) => {
     const { user_id, name, university, field, bio, gender, gender_preference, 
             profile_status, location_lat, location_long, last_location, visibility } = profileData;
@@ -31,7 +31,7 @@ exports.CreateProfile = async (profileData) => {
     }
 };
 
-// Read a user by ID
+// Get a profile by ID
 exports.ProfileFindById = async (profile_id) => {
     const query = 'SELECT * FROM profiles WHERE profile_id = $1';
     const values = [profile_id];
@@ -48,7 +48,7 @@ exports.ProfileFindById = async (profile_id) => {
     }
 };
 
-// Update a user
+// Update a profile
 exports.ProfileUpdate = async (profile_id, profileData) => {
     const { user_id, name, university, field, bio, gender, gender_preference, 
             profile_status, location_lat, location_long, last_location, visibility } = profileData;
@@ -130,6 +130,32 @@ exports.UpdateProfileLocation = async (profile_id, lat, long) => {
     }
 };
 
+/**
+ * Toggle a profile's visibility status
+ * @param {number} profile_id - The ID of the profile to update
+ * @returns {Object|null} Updated profile or null if not found
+ */
+exports.ToggleProfileVisibility = async (profile_id) => {
+    const query = `
+        UPDATE profiles
+        SET visibility = NOT visibility
+        WHERE profile_id = $1
+        RETURNING *
+    `;
+
+    const values = [profile_id];
+
+    try {
+        const result = await pool.query(query, values);
+        if (result.rows.length > 0) {
+            return new Profile(...Object.values(result.rows[0]));
+        }
+        return null;
+    } catch (error) {
+        console.error('Error toggling profile visibility:', error);
+        throw error;
+    }
+};
 exports.ToggleProfileVisibility = async (profile_id) => {
     const query = `
         UPDATE profiles
