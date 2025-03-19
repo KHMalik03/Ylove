@@ -8,7 +8,7 @@ exports.CreateProfile = async (profileData) => {
     const created_at = new Date();
 
     const query = `
-        INSERT INTO profiles (
+        INSERT INTO profile (
             user_id, name, university, field, bio, gender, gender_preference, 
             profile_status, location_lat, location_long, last_location, visibility, created_at
         ) 
@@ -33,7 +33,7 @@ exports.CreateProfile = async (profileData) => {
 
 // Get a profile by ID
 exports.ProfileFindById = async (profile_id) => {
-    const query = 'SELECT * FROM profiles WHERE profile_id = $1';
+    const query = 'SELECT * FROM profile WHERE profile_id = $1';
     const values = [profile_id];
 
     try {
@@ -55,7 +55,7 @@ exports.ProfileUpdate = async (profile_id, profileData) => {
     const updated_at = new Date();
 
     const query = `
-        UPDATE profiles
+        UPDATE profile
         SET user_id = COALESCE($1, user_id),
             name = COALESCE($2, name),
             university = COALESCE($3, university),
@@ -68,7 +68,6 @@ exports.ProfileUpdate = async (profile_id, profileData) => {
             location_long = COALESCE($10, location_long),
             last_location = COALESCE($11, last_location),
             visibility = COALESCE($12, visibility),
-            updated_at = $13
         WHERE profile_id = $14
         RETURNING *
     `;
@@ -93,7 +92,7 @@ exports.ProfileUpdate = async (profile_id, profileData) => {
 
 // Delete a user
 exports.ProfileDelete = async (profile_id) => {
-    const query = 'DELETE FROM profiles WHERE profile_id = $1 RETURNING *';
+    const query = 'DELETE FROM profile WHERE profile_id = $1 RETURNING *';
     const values = [profile_id];
 
     try {
@@ -108,7 +107,7 @@ exports.ProfileDelete = async (profile_id) => {
 exports.UpdateProfileLocation = async (profile_id, lat, long) => {
     const last_location = new Date();
     const query = `
-        UPDATE profiles
+        UPDATE profile
         SET location_lat = $1,
             location_long = $2,
             last_location = $3
@@ -137,7 +136,7 @@ exports.UpdateProfileLocation = async (profile_id, lat, long) => {
  */
 exports.ToggleProfileVisibility = async (profile_id) => {
     const query = `
-        UPDATE profiles
+        UPDATE profile
         SET visibility = NOT visibility
         WHERE profile_id = $1
         RETURNING *
@@ -158,7 +157,7 @@ exports.ToggleProfileVisibility = async (profile_id) => {
 };
 exports.ToggleProfileVisibility = async (profile_id) => {
     const query = `
-        UPDATE profiles
+        UPDATE profile
         SET visibility = NOT visibility
         WHERE profile_id = $1
         RETURNING *

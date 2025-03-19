@@ -1,6 +1,3 @@
-const { pool } = require('../database');
-const profileController = require('../controllers/profile.controller');
-
 class Profile {
 
     profile_id;
@@ -33,37 +30,6 @@ class Profile {
         this.last_location = last_location;
         this.visibility = visibility || true;
     }
-
-     // Create a new profile using the controller
-     static async create(profileData) {
-        return await profileController.CreateProfile(profileData);
-    }
-
-    // Read a profile by ID using the controller
-    static async findById(profile_id) {
-        return await profileController.ProfileFindById(profile_id);
-    }
-
-    // Update a profile using the controller
-    static async update(profile_id, profileData) {
-        return await profileController.ProfileUpdate(profile_id, profileData);
-    }
-
-    // Delete a profile using the controller
-    static async delete(profile_id) {
-        return await profileController.ProfileDelete(profile_id);
-    }
-     
-    //Update a profile location using the controller
-    static async updateLocation(profile_id, locationData) {
-        return await profileController.ProfileUpdateLocation(profile_id, locationData);
-    }
-
-    //Toggle a profile visibility using the controller
-    static async toggleVisibility(profile_id) {
-        return await profileController.ProfileToggleVisibility(profile_id);
-    }
-
 
 }
 

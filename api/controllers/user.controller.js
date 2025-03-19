@@ -18,7 +18,7 @@ exports.CreateUser  = async (userData) => {
         return new User(...result.rows[0]);
     } catch (error) {
         console.error('Error creating user:', error);
-        throw error; // Rethrow the error for further handling
+        throw error;
     }
 };
 
@@ -35,7 +35,7 @@ exports.UserFindById = async (user_id) => {
         return null; // User not found
     } catch (error) {
         console.error('Error finding user by ID:', error);
-        throw error; // Rethrow the error for further handling
+        throw error;
     }
 };
 
@@ -61,7 +61,7 @@ exports.UserUpdate = async (user_id, userData) => {
         return null; // User not found
     } catch (error) {
         console.error('Error updating user:', error);
-        throw error; // Rethrow the error for further handling
+        throw error;
     }
 };
 
@@ -75,8 +75,6 @@ exports.UserDelete = async (user_id) => {
         return result.rowCount > 0; // Returns true if a user was deleted
     } catch (error) {
         console.error('Error deleting user:', error);
-        throw error; // Rethrow the error for further handling
+        throw error;
     }
 };
-
-//test
