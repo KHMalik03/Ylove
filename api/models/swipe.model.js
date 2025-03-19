@@ -1,6 +1,14 @@
 const { pool } = require('../database');
 
 class Swipe {
+
+    swipe_id;
+    swiper_id;
+    swiped_id;
+    direction;
+    timestamp;
+
+    //Swipe class constructor
     constructor(swipe_id, swiper_id, swiped_id, direction, timestamp) {
         this.swipe_id = swipe_id;
         this.swiper_id = swiper_id;

@@ -2,6 +2,22 @@ const { pool } = require('../database');
 const profileController = require('../controllers/profile.controller');
 
 class Profile {
+
+    profile_id;
+    user_id;
+    name;
+    university;
+    field;
+    bio;
+    gender;
+    gender_preference;
+    profile_status;
+    location_lat;
+    location_long;
+    last_location;
+    visibility;
+
+//Profile class constructor
     constructor(profile_id, user_id, name, university, field, bio, gender, gender_preference, profile_status, location_lat, location_long, last_location, visibility) {
         this.profile_id = profile_id;
         this.user_id = user_id;

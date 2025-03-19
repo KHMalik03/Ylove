@@ -1,6 +1,14 @@
 const { pool } = require('../database');
 
 class Photo {
+
+    photo_id;
+    user_id;
+    img_URL;
+    is_profile_picture;
+    display_order;
+
+    //Photo class constructor
     constructor(photo_id, user_id, img_URL, is_profile_picture, display_order) {
         this.photo_id = photo_id;
         this.user_id = user_id;

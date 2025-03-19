@@ -1,6 +1,14 @@
 const { pool } = require('../database');
 
 class Match {
+
+    match_id;
+    user_id_1;
+    user_id_2;
+    created_at;
+    is_active;
+
+    //Match class constructor
     constructor(match_id, user_id_1, user_id_2, created_at, is_active) {
         this.match_id = match_id;
         this.user_id_1 = user_id_1;
