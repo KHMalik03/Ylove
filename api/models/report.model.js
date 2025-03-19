@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Report {
 
     report_id;
@@ -21,7 +19,6 @@ class Report {
         this.status = status || false; // FALSE for pending, TRUE for resolved
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = Report;

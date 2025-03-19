@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Message {
 
     message_id;
@@ -19,7 +17,6 @@ class Message {
         this.read_status = read_status || false;
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = Message;

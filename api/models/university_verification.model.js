@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class UniversityVerification {
 
     verification_id;
@@ -15,7 +13,6 @@ class UniversityVerification {
         this.verified_at = verified_at;
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = UniversityVerification;

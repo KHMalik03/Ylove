@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Match {
 
     match_id;
@@ -17,7 +15,6 @@ class Match {
         this.is_active = is_active || true;
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = Match;

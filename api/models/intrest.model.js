@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Interest {
 
     interest_id;
@@ -13,7 +11,6 @@ class Interest {
         this.category = category;
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = Interest;

@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class UserInterest {
     user_id;
     interest_id;
@@ -12,7 +10,6 @@ class UserInterest {
         this.created_at = created_at || new Date();
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = UserInterest;

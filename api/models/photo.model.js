@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Photo {
 
     photo_id;
@@ -17,7 +15,6 @@ class Photo {
         this.display_order = display_order;
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = Photo;

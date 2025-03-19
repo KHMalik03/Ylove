@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Block {
 
     block_id;
@@ -15,7 +13,6 @@ class Block {
         this.timestamp = timestamp || new Date();
     }
 
-    // Add methods for CRUD operations hereS
 }
 
 module.exports = Block;

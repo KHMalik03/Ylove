@@ -1,5 +1,3 @@
-const { pool } = require('../database');
-
 class Swipe {
 
     swipe_id;
@@ -17,7 +15,6 @@ class Swipe {
         this.timestamp = timestamp || new Date();
     }
 
-    // Add methods for CRUD operations here
 }
 
 module.exports = Swipe;
