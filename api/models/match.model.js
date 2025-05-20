@@ -1,3 +1,6 @@
+const matchController = require('../controllers/match.controller');
+const { pool } = require('../database');
+
 class Match {
 
     match_id;
@@ -15,6 +18,40 @@ class Match {
         this.is_active = is_active || true;
     }
 
+    // Create a new match using the controller
+    static async create(matchData) {
+        return await matchController.createMatch(matchData);
+    }
+
+    // Read a match by ID using the controller
+    static async read(match_id) {
+        return await matchController.findMatchById(match_id);
+    }
+
+    // Geyt all matches for a user using the controller
+    static async getUserMatches(user_id) {
+        return await matchController.getUserMatches(user_id);
+    }
+
+    // Check if a match exists using the controller
+    static async checkMatchExists(match_id) {
+        return await matchController.checkMatchExists(match_id);
+    }
+
+    // Update a match status using the controller
+    static async updateMatchStatus(match_id, status) {
+        return await matchController.updateMatchStatus(match_id, status);
+    }
+
+    // Delete a match using the controller
+    static async deleteMatch(match_id) {
+        return await matchController.deleteMatch(match_id);
+    }
+
+    // Get match count for a user using the controller
+    static async getMatchCount(user_id) {
+        return await matchController.getMatchCount(user_id);
+    }
 }
 
 module.exports = Match;

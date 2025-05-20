@@ -1,5 +1,5 @@
 const { pool } = require('../database');
-const UserInterest = require('./UserInterest'); // Assuming UserInterest is in the same directory
+const UserInterest = require('../models/user_intrest.model');
 
 // Create a new user interest
 exports.createUserInterest = async (user_id, interest_id) => {

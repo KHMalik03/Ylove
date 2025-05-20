@@ -1,3 +1,6 @@
+const profileController = require('../controllers/profile.controller.js');
+const { pool } = require('../database');
+
 class Profile {
 
     profile_id;
@@ -29,6 +32,26 @@ class Profile {
         this.location_long = location_long;
         this.last_location = last_location;
         this.visibility = visibility || true;
+    }
+
+    // Create a new profile using the controller
+    static async create(profileData) {
+        return await profileController.createProfile(profileData);
+    }
+
+    // Read a profile by ID using the controller
+    static async readById(profileId) {
+        return await profileController.getProfileById(profileId);
+    }
+
+    // Update a profile using the controller
+    static async update(profileId, profileData) {
+        return await profileController.updateProfile(profileId, profileData);
+    }
+
+    // Delete a profile using the controller
+    static async delete(profileId) {
+        return await profileController.deleteProfile(profileId);
     }
 
 }
