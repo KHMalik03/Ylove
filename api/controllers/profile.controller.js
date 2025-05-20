@@ -4,14 +4,17 @@ const { pool } = require('../database');
 exports.createProfile = async (profileData) => {
     const { user_id, name, university, field, bio, gender, gender_preference, profile_status, location_lat, location_long, last_location, visibility } = profileData;
     const query = `
-        INSERT INTO profiles (user_id, name, university, field, bio, gender, gender_preference, profile_status, location_lat, location_long, last_location, visibility)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;
+        INSERT INTO profile (user_id, name, university, field, bio, gender, gender_preference, profile_status, location_lat, location_long, last_location, visibility)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ;
     `;
     const values = [user_id, name, university, field, bio, gender, gender_preference, profile_status || 'active', location_lat, location_long, last_location, visibility || true];
     
     try {
-        const result = await pool.query(query, values);
-        return new Profile(...result.rows[0]);
+        const [result] = await pool.query(query, values);
+        
+        // Récupérer et retourner le profil créé
+        const [rows] = await pool.query('SELECT * FROM profile WHERE profile_id = ?', [result.insertId]);
+        return rows[0];  // Retourner directement les données, pas de nouvelle instance
     } catch (error) {
         console.error('Error creating profile:', error);
         throw error;
@@ -20,15 +23,11 @@ exports.createProfile = async (profileData) => {
 
 // Read a profile by ID
 exports.getProfileById = async (profile_id) => {
-    const query = 'SELECT * FROM profiles WHERE profile_id = $1;';
-    const values = [profile_id];
+    const query = 'SELECT * FROM profile WHERE profile_id = ?;';
     
     try {
-        const result = await pool.query(query, values);
-        if (result.rows.length > 0) {
-            return new Profile(...result.rows[0]);
-        }
-        return null;
+        const [rows] = await pool.query(query, [profile_id]);
+        return rows[0];  // Retourner directement les données, pas de nouvelle instance
     } catch (error) {
         console.error('Error finding profile by ID:', error);
         throw error;
@@ -39,18 +38,19 @@ exports.getProfileById = async (profile_id) => {
 exports.updateProfile = async (profile_id, profileData) => {
     const { name, university, field, bio, gender, gender_preference, profile_status, location_lat, location_long, last_location, visibility } = profileData;
     const query = `
-        UPDATE profiles
-        SET name = $1, university = $2, field = $3, bio = $4, gender = $5, gender_preference = $6, profile_status = $7, location_lat = $8, location_long = $9, last_location = $10, visibility = $11
-        WHERE profile_id = $12 RETURNING *;
+        UPDATE profile
+        SET name = ?, university = ?, field = ?, bio = ?, gender = ?, gender_preference = ?, 
+            profile_status = ?, location_lat = ?, location_long = ?, last_location = ?, visibility = ?
+        WHERE profile_id = ? ;
     `;
     const values = [name, university, field, bio, gender, gender_preference, profile_status, location_lat, location_long, last_location, visibility, profile_id];
     
     try {
-        const result = await pool.query(query, values);
-        if (result.rows.length > 0) {
-            return new Profile(...result.rows[0]);
-        }
-        return null;
+        await pool.query(query, values);
+        
+        const [rows] = await pool.query('SELECT * FROM profile WHERE profile_id = ?', [profile_id]);
+        return rows[0];  // Retourner directement les données, pas de nouvelle instance
+       
     } catch (error) {
         console.error('Error updating profile:', error);
         throw error;
@@ -59,12 +59,11 @@ exports.updateProfile = async (profile_id, profileData) => {
 
 // Delete a profile
 exports.deleteProfile = async (profile_id) => {
-    const query = 'DELETE FROM profiles WHERE profile_id = $1 RETURNING *;';
-    const values = [profile_id];
+    const query = 'DELETE FROM profile WHERE profile_id = ? ;';
     
     try {
-        const result = await pool.query(query, values);
-        return result.rowCount > 0;
+        const [result] = await pool.query(query, [profile_id]);
+        return result.affectedRows > 0;
     } catch (error) {
         console.error('Error deleting profile:', error);
         throw error;

@@ -7,3 +7,4 @@ const pool = mysql.createConnection({
     database: 'ylove'
 }).promise();
 
+module.exports = { pool }; 

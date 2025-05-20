@@ -1,5 +1,4 @@
 const profileController = require('../controllers/profile.controller.js');
-const { pool } = require('../database');
 
 class Profile {
 

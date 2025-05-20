@@ -1,4 +1,4 @@
-const interestController = require('../controllers/intrest.controller');
+const interestController = require('../controllers/intrest.controllers.js');
 
 class Interest {
 

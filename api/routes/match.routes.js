@@ -1,10 +1,10 @@
 const express = require('express');
-const Match = require('../models/match');
+const Match = require('../models/match.model.js');
 
 const router = express.Router();
 
 // Create a new match
-router.post('/matches', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const match = await Match.create(req.body);
         res.status(201).json(match);
@@ -14,7 +14,7 @@ router.post('/matches', async (req, res) => {
 });
 
 // Get a match by ID
-router.get('/matches/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const match = await Match.read(req.params.id);
         if (match) {
@@ -28,7 +28,7 @@ router.get('/matches/:id', async (req, res) => {
 });
 
 // Get all matches for a user
-router.get('/users/:user_id/matches', async (req, res) => {
+router.get('/user/:user_id/matches', async (req, res) => {
     try {
         const matches = await Match.getUserMatches(req.params.user_id);
         res.json(matches);
@@ -38,7 +38,7 @@ router.get('/users/:user_id/matches', async (req, res) => {
 });
 
 // Update a match's status
-router.put('/matches/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const updatedMatch = await Match.updateMatchStatus(req.params.id, req.body.is_active);
         if (updatedMatch) {
@@ -52,7 +52,7 @@ router.put('/matches/:id', async (req, res) => {
 });
 
 // Delete a match
-router.delete('/matches/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const deleted = await Match.delete(req.params.id);
         if (deleted) {
@@ -66,7 +66,7 @@ router.delete('/matches/:id', async (req, res) => {
 });
 
 // Get match count for a user
-router.get('/users/:user_id/match-count', async (req, res) => {
+router.get('/user/:user_id/count', async (req, res) => {
     try {
         const count = await Match.getMatchCount(req.params.user_id);
         res.json({ count });

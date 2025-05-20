@@ -1,5 +1,6 @@
-class Block {
+const BlockController = require('../controllers/block.controller.js');
 
+class Block {
     block_id;
     blocker_id;
     blocked_id;
@@ -13,9 +14,9 @@ class Block {
         this.timestamp = timestamp || new Date();
     }
 
-    // Create a new block
-    static async create(blocker_id, blocked_id) {
-        return await BlockController.createBlock(blocker_id, blocked_id);
+    // Create a new block - CORRECTION ICI
+    static async create(blockData) {
+        return await BlockController.createBlock(blockData);
     }
 
     // Read a block by ID

@@ -1,5 +1,6 @@
-class Swipe {
+const SwipeController = require('../controllers/swipe.controllers.js');
 
+class Swipe {
     swipe_id;
     swiper_id;
     swiped_id;
@@ -16,27 +17,32 @@ class Swipe {
     }
 
     // Create a new swipe
-    static async create(swiper_id, swiped_id, direction) {
-        return await SwipeController.createSwipe(swiper_id, swiped_id, direction);
+    static async create(swipeData) {
+        console.log('Model create called with:', swipeData);
+        return await SwipeController.createSwipe(swipeData);
     }
 
     // Read a swipe by ID
-    static async read(swipe_id) {
+    static async readById(swipe_id) {
+        console.log('Model readById called with:', swipe_id);
         return await SwipeController.getSwipeById(swipe_id);
     }
 
     // Get all swipes by swiper_id
-    static async readAll(swiper_id) {
+    static async getSwipesBySwiperId(swiper_id) {
+        console.log('Model getSwipesBySwiperId called with:', swiper_id);
         return await SwipeController.getSwipesBySwiperId(swiper_id);
     }
 
     // Get all swipes by swiped_id
-    static async readAllBySwipedId(swiped_id) {
+    static async getSwipesBySwipedId(swiped_id) {
+        console.log('Model getSwipesBySwipedId called with:', swiped_id);
         return await SwipeController.getSwipesBySwipedId(swiped_id);
     }
 
     // Delete a swipe
     static async delete(swipe_id) {
+        console.log('Model delete called with:', swipe_id);
         return await SwipeController.deleteSwipe(swipe_id);
     }
 }

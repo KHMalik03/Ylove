@@ -1,5 +1,4 @@
-const { pool } = require('../database');
-const userController = require('../controllers/user.controller');
+const userController = require('../controllers/user.controller.js');
 
 class User {
     

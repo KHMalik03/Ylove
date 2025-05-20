@@ -1,10 +1,10 @@
 const express = require('express');
-const Profile = require('../models/profile');
+const Profile = require('../models/profile.model');
 
 const router = express.Router();
 
 // Create a new profile
-router.post('/profiles', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const profile = await Profile.create(req.body);
         res.status(201).json(profile);
@@ -14,7 +14,7 @@ router.post('/profiles', async (req, res) => {
 });
 
 // Get a profile by ID
-router.get('/profiles/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const profile = await Profile.readById(req.params.id);
         if (profile) {
@@ -28,7 +28,7 @@ router.get('/profiles/:id', async (req, res) => {
 });
 
 // Update a profile
-router.put('/profiles/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const updatedProfile = await Profile.update(req.params.id, req.body);
         if (updatedProfile) {
@@ -42,7 +42,7 @@ router.put('/profiles/:id', async (req, res) => {
 });
 
 // Delete a profile
-router.delete('/profiles/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const deleted = await Profile.delete(req.params.id);
         if (deleted) {

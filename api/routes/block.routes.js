@@ -1,10 +1,10 @@
 const express = require('express');
-const Block = require('../models/block');
+const Block = require('../models/block.model.js'); 
 
 const router = express.Router();
 
 // Create a new block
-router.post('/blocks', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const block = await Block.create(req.body);
         res.status(201).json(block);
@@ -14,7 +14,7 @@ router.post('/blocks', async (req, res) => {
 });
 
 // Get a block by ID
-router.get('/blocks/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const block = await Block.readById(req.params.id);
         if (block) {
@@ -28,7 +28,7 @@ router.get('/blocks/:id', async (req, res) => {
 });
 
 // Get all blocks by a blocker ID
-router.get('/blocks/blocker/:blocker_id', async (req, res) => {
+router.get('/blocker/:blocker_id', async (req, res) => {
     try {
         const blocks = await Block.getBlocksByBlockerId(req.params.blocker_id);
         res.json(blocks);
@@ -38,7 +38,7 @@ router.get('/blocks/blocker/:blocker_id', async (req, res) => {
 });
 
 // Delete a block
-router.delete('/blocks/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const deleted = await Block.delete(req.params.id);
         if (deleted) {

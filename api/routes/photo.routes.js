@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const photoModel = require('../models/photo.controller');
+const Photo = require('../models/photo.model.js');
 
 // Create a new photo
 router.post('/', async (req, res) => {
     try {
-        const photo = await photoModel.CreatePhoto(req.body);
+        console.log('Creating photo with data:', req.body);
+        const photo = await Photo.create(req.body);
         res.status(201).json(photo);
     } catch (error) {
+        console.error('Route error:', error);
         res.status(500).json({ message: 'Error creating photo', error: error.message });
     }
 });
@@ -15,7 +17,7 @@ router.post('/', async (req, res) => {
 // Get a photo by ID
 router.get('/:id', async (req, res) => {
     try {
-        const photo = await photoModel.PhotoFindById(req.params.id);
+        const photo = await Photo.read(req.params.id);
         if (photo) {
             res.json(photo);
         } else {
@@ -29,7 +31,7 @@ router.get('/:id', async (req, res) => {
 // Get all photos for a user
 router.get('/user/:userId', async (req, res) => {
     try {
-        const photos = await photoModel.GetUserPhotos(req.params.userId);
+        const photos = await Photo.getUserPhotos(req.params.userId);
         res.json(photos);
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving user photos', error: error.message });
@@ -39,7 +41,7 @@ router.get('/user/:userId', async (req, res) => {
 // Get profile picture for a user
 router.get('/user/:userId/profile', async (req, res) => {
     try {
-        const photo = await photoModel.GetUserProfilePicture(req.params.userId);
+        const photo = await Photo.getProfilePicture(req.params.userId);
         if (photo) {
             res.json(photo);
         } else {
@@ -53,7 +55,7 @@ router.get('/user/:userId/profile', async (req, res) => {
 // Update a photo
 router.put('/:id', async (req, res) => {
     try {
-        const photo = await photoModel.PhotoUpdate(req.params.id, req.body);
+        const photo = await Photo.update(req.params.id, req.body);
         if (photo) {
             res.json(photo);
         } else {
@@ -67,7 +69,7 @@ router.put('/:id', async (req, res) => {
 // Set a photo as profile picture
 router.put('/:id/set-profile', async (req, res) => {
     try {
-        const photo = await photoModel.SetAsProfilePicture(req.params.id, req.body.user_id);
+        const photo = await Photo.setProfilePicture(req.params.id, req.body.user_id);
         if (photo) {
             res.json(photo);
         } else {
@@ -81,7 +83,7 @@ router.put('/:id/set-profile', async (req, res) => {
 // Delete a photo
 router.delete('/:id', async (req, res) => {
     try {
-        const deleted = await photoModel.PhotoDelete(req.params.id);
+        const deleted = await Photo.delete(req.params.id);
         if (deleted) {
             res.json({ message: 'Photo deleted successfully' });
         } else {
@@ -95,7 +97,7 @@ router.delete('/:id', async (req, res) => {
 // Reorder user photos
 router.post('/user/:userId/reorder', async (req, res) => {
     try {
-        const photos = await photoModel.ReorderPhotos(req.params.userId, req.body.photoOrders);
+        const photos = await Photo.reorderPhotos(req.params.userId, req.body.photoOrders);
         res.json(photos);
     } catch (error) {
         res.status(500).json({ message: 'Error reordering photos', error: error.message });

@@ -1,17 +1,34 @@
 const { pool } = require('../database');
-const UserInterest = require('../models/user_intrest.model');
 
 // Create a new user interest
 exports.createUserInterest = async (user_id, interest_id) => {
-    const created_at = new Date();
-    const userInterest = new UserInterest(user_id, interest_id, created_at);
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-    const query = 'INSERT INTO User_Interest (user_id, interest_id, created_at) VALUES (?, ?, ?)';
-    const values = [userInterest.user_id, userInterest.interest_id, userInterest.created_at];
+    const query = 'INSERT INTO user_interest (user_id, interest_id, created_at) VALUES (?, ?, ?)';
+    const values = [user_id, interest_id, created_at];
 
     try {
-        const [result] = await pool.execute(query, values);
-        return { success: true, userInterestId: result.insertId };
+        // Vérifier si l'utilisateur et l'intérêt existent
+        const [userExists] = await pool.query('SELECT 1 FROM user WHERE user_id = ?', [user_id]);
+        if (userExists.length === 0) {
+            return { success: false, error: 'User does not exist' };
+        }
+        
+        const [interestExists] = await pool.query('SELECT 1 FROM interest WHERE interest_id = ?', [interest_id]);
+        if (interestExists.length === 0) {
+            return { success: false, error: 'Interest does not exist' };
+        }
+        
+        const [result] = await pool.query(query, values);
+        
+        return { 
+            success: true, 
+            user_interest: { 
+                user_id: parseInt(user_id), 
+                interest_id: parseInt(interest_id), 
+                created_at 
+            } 
+        };
     } catch (error) {
         console.error('Error creating user interest:', error);
         return { success: false, error: error.message };
@@ -20,10 +37,22 @@ exports.createUserInterest = async (user_id, interest_id) => {
 
 // Retrieve user interests by user_id
 exports.getUserInterests = async (user_id) => {
-    const query = 'SELECT * FROM User_Interest WHERE user_id = ?';
     try {
-        const [results] = await pool.execute(query, [user_id]);
-        return { success: true, interests: results };
+        // Vérifier d'abord si l'utilisateur existe
+        const [userExists] = await pool.query('SELECT 1 FROM user WHERE user_id = ?', [user_id]);
+        if (userExists.length === 0) {
+            return { success: false, error: 'User does not exist' };
+        }
+        
+        // Obtenir les intérêts avec les informations détaillées
+        const [rows] = await pool.query(`
+            SELECT ui.user_id, ui.interest_id, ui.created_at, i.name, i.category 
+            FROM user_interest ui
+            JOIN interest i ON ui.interest_id = i.interest_id
+            WHERE ui.user_id = ?
+        `, [user_id]);
+        
+        return { success: true, interests: rows };
     } catch (error) {
         console.error('Error retrieving user interests:', error);
         return { success: false, error: error.message };
@@ -32,9 +61,12 @@ exports.getUserInterests = async (user_id) => {
 
 // Delete a user interest
 exports.deleteUserInterest = async (user_id, interest_id) => {
-    const query = 'DELETE FROM User_Interest WHERE user_id = ? AND interest_id = ?';
     try {
-        const [result] = await pool.execute(query, [user_id, interest_id]);
+        const [result] = await pool.query(
+            'DELETE FROM user_interest WHERE user_id = ? AND interest_id = ?',
+            [user_id, interest_id]
+        );
+        
         if (result.affectedRows > 0) {
             return { success: true };
         } else {

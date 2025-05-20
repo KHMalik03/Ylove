@@ -5,12 +5,16 @@ exports.createInterest = async (interestData) => {
     const { name, category } = interestData;
 
     try {
-        const result = await pool.query(
-            'INSERT INTO interests (name, category) VALUES ($1, $2) RETURNING *',
+        const [result] = await pool.query(
+            'INSERT INTO interest (name, category) VALUES (?, ?)',
             [name, category]
         );
-        return result.rows[0]; // Return the created interest
+        
+        // Récupérer l'intérêt créé
+        const [rows] = await pool.query('SELECT * FROM interest WHERE interest_id = ?', [result.insertId]);
+        return rows[0];
     } catch (error) {
+        console.error('Error creating interest:', error);
         throw new Error('Failed to create interest: ' + error.message);
     }
 };
@@ -18,9 +22,10 @@ exports.createInterest = async (interestData) => {
 // Controller to get an interest by ID
 exports.getInterestById = async (interestId) => {
     try {
-        const result = await pool.query('SELECT * FROM interests WHERE interest_id = $1', [interestId]);
-        return result.rows[0]; // Return the interest or null if not found
+        const [rows] = await pool.query('SELECT * FROM interest WHERE interest_id = ?', [interestId]);
+        return rows[0];
     } catch (error) {
+        console.error('Error retrieving interest:', error);
         throw new Error('Failed to retrieve interest: ' + error.message);
     }
 };
@@ -30,12 +35,18 @@ exports.updateInterest = async (interestId, interestData) => {
     const { name, category } = interestData;
 
     try {
-        const result = await pool.query(
-            'UPDATE interests SET name = $1, category = $2 WHERE interest_id = $3 RETURNING *',
+        const [result] = await pool.query(
+            'UPDATE interest SET name = ?, category = ? WHERE interest_id = ?',
             [name, category, interestId]
         );
-        return result.rows[0]; // Return the updated interest
+        
+        if (result.affectedRows > 0) {
+            const [rows] = await pool.query('SELECT * FROM interest WHERE interest_id = ?', [interestId]);
+            return rows[0];
+        }
+        return null;
     } catch (error) {
+        console.error('Error updating interest:', error);
         throw new Error('Failed to update interest: ' + error.message);
     }
 };
@@ -43,12 +54,10 @@ exports.updateInterest = async (interestId, interestData) => {
 // Controller to delete an interest
 exports.deleteInterest = async (interestId) => {
     try {
-        const result = await pool.query(
-            'DELETE FROM interests WHERE interest_id = $1 RETURNING *',
-            [interestId]
-        );
-        return result.rowCount > 0; // Return true if a row was deleted
+        const [result] = await pool.query('DELETE FROM interest WHERE interest_id = ?', [interestId]);
+        return result.affectedRows > 0;
     } catch (error) {
+        console.error('Error deleting interest:', error);
         throw new Error('Failed to delete interest: ' + error.message);
     }
 };

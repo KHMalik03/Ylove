@@ -1,5 +1,4 @@
-const matchController = require('../controllers/match.controller');
-const { pool } = require('../database');
+const matchController = require('../controllers/match.controllers.js');
 
 class Match {
 
@@ -44,7 +43,7 @@ class Match {
     }
 
     // Delete a match using the controller
-    static async deleteMatch(match_id) {
+    static async delete(match_id) {
         return await matchController.deleteMatch(match_id);
     }
 

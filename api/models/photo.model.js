@@ -1,5 +1,4 @@
-const { pool } = require('../database');
-const photoController = require('../controllers/photo.controller');
+const photoController = require('../controllers/photo.controller.js');
 
 class Photo {
     photo_id;
@@ -42,9 +41,9 @@ class Photo {
     }
 
     // Set a photo as profile picture using the controller
-    static async setProfilePicture(photo_id) {
-        return await photoController.SetProfilePicture(photo_id);
-    }
+    static async setProfilePicture(photo_id, user_id) {
+    return await photoController.SetAsProfilePicture(photo_id, user_id);
+}
 
     // Delete a photo using the controller
     static async delete(photo_id) {

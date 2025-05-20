@@ -1,10 +1,9 @@
 const express = require('express');
-const Interest = require('../models/interest');
-
+const Interest = require('../models/intrest.model.js');
 const router = express.Router();
 
 // Create a new interest
-router.post('/interests', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const interest = await Interest.create(req.body);
         res.status(201).json(interest);
@@ -14,7 +13,7 @@ router.post('/interests', async (req, res) => {
 });
 
 // Get an interest by ID
-router.get('/interests/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const interest = await Interest.readById(req.params.id);
         if (interest) {
@@ -28,7 +27,7 @@ router.get('/interests/:id', async (req, res) => {
 });
 
 // Update an interest
-router.put('/interests/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const updatedInterest = await Interest.update(req.params.id, req.body);
         if (updatedInterest) {
@@ -42,7 +41,7 @@ router.put('/interests/:id', async (req, res) => {
 });
 
 // Delete an interest
-router.delete('/interests/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const deleted = await Interest.delete(req.params.id);
         if (deleted) {

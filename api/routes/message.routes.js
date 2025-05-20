@@ -1,10 +1,10 @@
 const express = require('express');
-const Message = require('../models/message');
+const Message = require('../models/message.model.js');
 
 const router = express.Router();
 
 // Create a new message
-router.post('/messages', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const message = await Message.create(req.body);
         res.status(201).json(message);
@@ -14,7 +14,7 @@ router.post('/messages', async (req, res) => {
 });
 
 // Get a message by ID
-router.get('/messages/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const message = await Message.readById(req.params.id);
         if (message) {
@@ -28,7 +28,7 @@ router.get('/messages/:id', async (req, res) => {
 });
 
 // Get all messages for a match_id
-router.get('/messages/match/:match_id', async (req, res) => {
+router.get('/match/:match_id', async (req, res) => {
     try {
         const messages = await Message.getMessagesByMatchId(req.params.match_id);
         res.json(messages);
@@ -38,7 +38,7 @@ router.get('/messages/match/:match_id', async (req, res) => {
 });
 
 // Update the read status of a message
-router.put('/messages/:id/read-status', async (req, res) => {
+router.put('/:id/read-status', async (req, res) => {
     try {
         const updatedMessage = await Message.updateMessageReadStatus(req.params.id, req.body.read_status);
         if (updatedMessage) {
@@ -52,7 +52,7 @@ router.put('/messages/:id/read-status', async (req, res) => {
 });
 
 // Delete a message
-router.delete('/messages/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const deleted = await Message.delete(req.params.id);
         if (deleted) {
