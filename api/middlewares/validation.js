@@ -4,7 +4,7 @@ const Joi = require('joi');
 const userSchema = Joi.object({
   phone_number: Joi.string().pattern(/^\+?[0-9]{10,15}$/).required(),
   password_hash: Joi.string().required(),
-  date_of_birth: Joi.date().max('now').min('now-100y').required(),
+  date_of_birth: Joi.date().max('now').required(), // Removing the problematic min validation
   account_status: Joi.string().valid('active', 'inactive', 'suspended'),
   verification_status: Joi.boolean()
 });

@@ -1,4 +1,3 @@
-// api/middlewares/rateLimit.js
 const { pool } = require('../database');
 
 exports.limitSwipes = async (req, res, next) => {
