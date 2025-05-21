@@ -1,10 +1,11 @@
 const express = require('express');
 const User = require('../models/user.model.js');
+const { validateRequest, userSchema } = require('../middlewares/validation.js');
 
 const router = express.Router();
 
 // Create a new user
-router.post('/', async (req, res) => {
+router.post('/',validateRequest(userSchema), async (req, res) => {
     try {
         const user = await User.create(req.body);
         res.status(201).json(user);
@@ -28,7 +29,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a user
-router.put('/:id', async (req, res) => {
+router.put('/:id',validateRequest(userSchema), async (req, res) => {
     try {
         const updatedUser  = await User.update(req.params.id, req.body);
         if (updatedUser ) {

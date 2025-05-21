@@ -1,68 +1,88 @@
 const express = require('express');
-const Message = require('../models/message.model.js');
+const messageController = require('../controllers/message.controllers');
+const { protect } = require('../middlewares/auth');
 
 const router = express.Router();
 
-// Create a new message
-router.post('/', async (req, res) => {
-    try {
-        const message = await Message.create(req.body);
-        res.status(201).json(message);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create message' });
+// Get messages for a match
+router.get('/match/:matchId', protect, async (req, res) => {
+  try {
+    const matchId = req.params.matchId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    
+    // Verify user is part of the match
+    const [matchCheck] = await pool.query(
+      'SELECT * FROM `match` WHERE match_id = ? AND (user_id_1 = ? OR user_id_2 = ?)',
+      [matchId, req.user.user_id, req.user.user_id]
+    );
+    
+    if (matchCheck.length === 0) {
+      return res.status(403).json({ error: 'You are not authorized to view these messages' });
     }
+    
+    const result = await messageController.getMessagesByMatchId(matchId, page, limit);
+    res.json(result);
+  } catch (error) {
+    console.error('Error in get messages route:', error);
+    res.status(500).json({ error: 'Failed to retrieve messages' });
+  }
 });
 
-// Get a message by ID
-router.get('/:id', async (req, res) => {
-    try {
-        const message = await Message.readById(req.params.id);
-        if (message) {
-            res.json(message);
-        } else {
-            res.status(404).json({ error: 'Message not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve message' });
+// Send a new message
+router.post('/', protect, async (req, res) => {
+  try {
+    const { match_id, content } = req.body;
+    
+    if (!match_id || !content) {
+      return res.status(400).json({ error: 'Match ID and content are required' });
     }
+    
+    // Verify user is part of the match
+    const [matchCheck] = await pool.query(
+      'SELECT * FROM `match` WHERE match_id = ? AND (user_id_1 = ? OR user_id_2 = ?)',
+      [match_id, req.user.user_id, req.user.user_id]
+    );
+    
+    if (matchCheck.length === 0) {
+      return res.status(403).json({ error: 'You are not authorized to send messages in this match' });
+    }
+    
+    const messageData = {
+      match_id,
+      sender_id: req.user.user_id,
+      content
+    };
+    
+    const message = await messageController.createMessage(messageData);
+    res.status(201).json(message);
+  } catch (error) {
+    console.error('Error in create message route:', error);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
 });
 
-// Get all messages for a match_id
-router.get('/match/:match_id', async (req, res) => {
-    try {
-        const messages = await Message.getMessagesByMatchId(req.params.match_id);
-        res.json(messages);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve messages' });
+// Mark messages as read
+router.put('/read/match/:matchId', protect, async (req, res) => {
+  try {
+    const matchId = req.params.matchId;
+    
+    // Verify user is part of the match
+    const [matchCheck] = await pool.query(
+      'SELECT * FROM `match` WHERE match_id = ? AND (user_id_1 = ? OR user_id_2 = ?)',
+      [matchId, req.user.user_id, req.user.user_id]
+    );
+    
+    if (matchCheck.length === 0) {
+      return res.status(403).json({ error: 'You are not authorized to mark messages in this match' });
     }
-});
-
-// Update the read status of a message
-router.put('/:id/read-status', async (req, res) => {
-    try {
-        const updatedMessage = await Message.updateMessageReadStatus(req.params.id, req.body.read_status);
-        if (updatedMessage) {
-            res.json(updatedMessage);
-        } else {
-            res.status(404).json({ error: 'Message not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update message read status' });
-    }
-});
-
-// Delete a message
-router.delete('/:id', async (req, res) => {
-    try {
-        const deleted = await Message.delete(req.params.id);
-        if (deleted) {
-            res.status(204).send(); // No content
-        } else {
-            res.status(404).json({ error: 'Message not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to delete message' });
-    }
+    
+    const updatedCount = await messageController.markMessagesAsRead(matchId, req.user.user_id);
+    res.json({ success: true, updatedCount });
+  } catch (error) {
+    console.error('Error in mark as read route:', error);
+    res.status(500).json({ error: 'Failed to mark messages as read' });
+  }
 });
 
 module.exports = router;

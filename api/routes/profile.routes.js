@@ -1,10 +1,11 @@
 const express = require('express');
 const Profile = require('../models/profile.model');
+const { validateRequest, profileSchema } = require('../middlewares/validation.js');
 
 const router = express.Router();
 
 // Create a new profile
-router.post('/', async (req, res) => {
+router.post('/',validateRequest(profileSchema), async (req, res) => {
     try {
         const profile = await Profile.create(req.body);
         res.status(201).json(profile);
@@ -28,7 +29,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a profile
-router.put('/:id', async (req, res) => {
+router.put('/:id',validateRequest(profileSchema),validateRequest(profileSchema), async (req, res) => {
     try {
         const updatedProfile = await Profile.update(req.params.id, req.body);
         if (updatedProfile) {
